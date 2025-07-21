@@ -35,8 +35,7 @@ financial-portfolio-tracker/
 │   ├── portfolio_analysis.sql    # Basic portfolio performance queries
 │   ├── risk_analysis.sql         # Advanced risk and volatility analysis
 │   └── reporting_dashboard.sql   # Executive reporting and alerts
-├── .github/
-│   └── copilot-instructions.md   # AI coding assistant instructions
+├── .github/                         # GitHub repository configuration
 ├── package.json                  # Node.js dependencies
 └── README.md                     # This file
 ```
