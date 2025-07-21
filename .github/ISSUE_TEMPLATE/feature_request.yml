@@ -1,0 +1,52 @@
+name: Feature Request
+description: Suggest an idea for this project
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature!
+  
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: A clear and concise description of what you want to happen.
+      placeholder: Describe your feature idea...
+    validations:
+      required: true
+  
+  - type: textarea
+    id: problem-solution
+    attributes:
+      label: Problem this feature would solve
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: false
+  
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: false
+  
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature Type
+      description: What type of feature is this?
+      options:
+        - Frontend Enhancement
+        - Backend API
+        - Database Schema
+        - Analytics/Reporting
+        - Security
+        - Performance
+        - Documentation
+        - Other
+    validations:
+      required: true
