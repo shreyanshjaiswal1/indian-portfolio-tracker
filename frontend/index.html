@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇮🇳 Indian Portfolio Tracker - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-line"></i> 🇮🇳 Indian Portfolio Tracker</h1>
+                <div class="header-controls">
+                    <select id="userSelect" class="user-select">
+                        <option value="">Select User</option>
+                        <option value="raj_investor">Raj Kumar Sharma</option>
+                        <option value="priya_trader">Priya Patel</option>
+                        <option value="amit_growth">Amit Singh</option>
+                        <option value="sneha_value">Sneha Gupta</option>
+                        <option value="vikram_sip">Vikram Reddy</option>
+                    </select>
+                    <button id="refreshBtn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <section class="summary-section">
+            <div class="summary-cards">
+                <div class="card summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Portfolio Value</h3>
+                        <p class="card-value" id="totalValue">₹0.00</p>
+                        <span class="card-change positive" id="totalChange">+0.00%</span>
+                    </div>
+                </div>
+                
+                <div class="card summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-trending-up"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Invested</h3>
+                        <p class="card-value" id="totalInvested">₹0.00</p>
+                        <span class="card-subtitle">Initial Investment</span>
+                    </div>
+                </div>
+                
+                <div class="card summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Unrealized P&L</h3>
+                        <p class="card-value" id="unrealizedPL">₹0.00</p>
+                        <span class="card-change" id="unrealizedPLPct">0.00%</span>
+                    </div>
+                </div>
+                
+                <div class="card summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Active Portfolios</h3>
+                        <p class="card-value" id="activePortfolios">0</p>
+                        <span class="card-subtitle">Portfolios</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="chart-grid">
+                <!-- Portfolio Allocation Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Portfolio Allocation</h3>
+                        <div class="chart-controls">
+                            <select id="portfolioSelect" class="chart-select">
+                                <option value="">All Portfolios</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sector Distribution Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Sector Distribution</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="sectorChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="card chart-card full-width">
+                    <div class="card-header">
+                        <h3>Portfolio Performance Over Time</h3>
+                        <div class="chart-controls">
+                            <button class="btn btn-small" data-period="1M">1M</button>
+                            <button class="btn btn-small active" data-period="3M">3M</button>
+                            <button class="btn btn-small" data-period="6M">6M</button>
+                            <button class="btn btn-small" data-period="1Y">1Y</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Holdings Table -->
+        <section class="holdings-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Current Holdings</h3>
+                    <div class="table-controls">
+                        <input type="text" id="searchInput" placeholder="Search stocks..." class="search-input">
+                        <select id="sortSelect" class="sort-select">
+                            <option value="value">Sort by Value</option>
+                            <option value="return">Sort by Return</option>
+                            <option value="symbol">Sort by Symbol</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="holdings-table" id="holdingsTable">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Company</th>
+                                <th>Portfolio</th>
+                                <th>Shares</th>
+                                <th>Avg Cost</th>
+                                <th>Current Price</th>
+                                <th>Market Value</th>
+                                <th>P&L</th>
+                                <th>Return %</th>
+                                <th>Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdingsTableBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Analysis Section -->
+        <section class="risk-section">
+            <div class="card-grid">
+                <div class="card risk-card">
+                    <div class="card-header">
+                        <h3>Risk Metrics</h3>
+                    </div>
+                    <div class="risk-metrics">
+                        <div class="metric-item">
+                            <span class="metric-label">Portfolio Beta</span>
+                            <span class="metric-value" id="portfolioBeta">1.05</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Volatility (Annualized)</span>
+                            <span class="metric-value" id="volatility">15.2%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Sharpe Ratio</span>
+                            <span class="metric-value" id="sharpeRatio">1.35</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Value at Risk (95%)</span>
+                            <span class="metric-value" id="var95">-₹2,450</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h3>Alerts & Notifications</h3>
+                    </div>
+                    <div class="alerts-container" id="alertsContainer">
+                        <!-- Alerts will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Performers Section -->
+        <section class="performers-section">
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-trophy text-success"></i> Top Performers</h3>
+                    </div>
+                    <div class="performers-list" id="topPerformers">
+                        <!-- Top performers will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-triangle text-danger"></i> Worst Performers</h3>
+                    </div>
+                    <div class="performers-list" id="worstPerformers">
+                        <!-- Worst performers will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Loading portfolio data...</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Indian Portfolio Tracker. Built for NSE/BSE investors with ❤️ | Made by Shreyansh Jaiswal</p>
+    </footer>
+
+    <script src="js/mockData.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
